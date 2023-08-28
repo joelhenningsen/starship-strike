@@ -15,71 +15,103 @@ from player import Spaceship
 from enemy import Enemy
 
 
-# Color constants
-WHITE = (255, 255, 255)
-BLACK = (65, 65, 65)
-
-
 class Game:
     """A game class to handle the setup and running of the game."""
     def __init__(self):
         # Initialize Pygame, setup window and caption
-        pygame.init()  
-        self.window_width = 800
-        self.window_height = 600
-        self.window = pygame.display.set_mode((self.window_width, self.window_height))
+        pygame.init()
+        self.running, self.playing = True, False
+        self.UP_KEY, self.DOWN_KEY, self.SPACE_KEY, self.START_KEY, self.BACK_KEY = (
+            False, False, False, False, False)
+        self.DISPLAY_W, self.DISPLAY_H = 800, 600
+        self.display = pygame.Surface((self.DISPLAY_W, self.DISPLAY_H))
+        self.window = pygame.display.set_mode((self.DISPLAY_W, self.DISPLAY_H))
+        
+        # Setup color constants
+        self.BLACK, self.WHITE = (65, 65, 65), (255, 255, 255)
         pygame.display.set_caption("Starship Strike")
 
-        # Initializing game objects
-        self.all_sprites = pygame.sprite.Group()
-        self.enemies = pygame.sprite.Group()
-        self.bullets = pygame.sprite.Group()
-        self.player = Spaceship(self.all_sprites, self.bullets, self.window_width, self.window_height)
-        self.all_sprites.add(self.player)
-        
-        # Create 8 enemies
-        for _ in range(8):
-            enemy = Enemy(self.window_width, self.window_height)
-            self.all_sprites.add(enemy)
-            self.enemies.add(enemy)
-
-        # Initialize score and its font
-        self.score = 0
-        self.score_font = pygame.font.Font(None, 36)
-
-        # Load background image, set x and it's speed to move
-        self.background_img = pygame.image.load("graphics/space_bg.png")
-        self.background_img = pygame.transform.scale(self.background_img, (self.window_width, self.window_height))
-        self.bg_x = 0
-        self.bg_speed = 25
-
-        # Load moon image, set position to top right
-        self.moon_img = pygame.image.load("graphics/moon.png")
-        self.moon_rect = self.moon_img.get_rect()
-        self.moon_rect.topright = (self.window_width - 50, 30)
-
-        # Font for "new highscore"
-        self.font = pygame.font.Font(None, 36)
-
-    def process_events(self):
-        """Processes the events of the user."""
+    def check_events(self):
+        """Checks the inputs of the user."""
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                return True
-            # Moving the player up or down at a speed of +/- 7, shooting bullet
-            elif event.type == pygame.KEYDOWN:
+                self.running, self.playing = False, False
+            if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
-                    self.player.speed_y = -7
-                elif event.key == pygame.K_DOWN:
-                    self.player.speed_y = 7
-                elif event.key == pygame.K_SPACE:
-                    self.player.shoot()
-            # When key is released, speed is set back to 0
-            elif event.type == pygame.KEYUP:
-                if event.key == pygame.K_UP and self.player.speed_y < 0:
-                    self.player.speed_y = 0
-                elif event.key == pygame.K_DOWN and self.player.speed_y > 0:
-                    self.player.speed_y = 0
+                    self.UP_KEY = True
+                if event.key == pygame.K_DOWN:
+                    self.DOWN_KEY = True
+                if event.key == pygame.K_SPACE:
+                    self.SPACE_KEY = True
+                if event.key == pygame.K_RETURN:
+                    self.START_KEY = True
+                if event.key == pygame.K_BACKSPACE:
+                    self.BACK_KEY = True
+
+        # for event in pygame.event.get():
+        #     if event.type == pygame.QUIT:
+        #         self.running, self.playing = False, False
+        #     # Moving the player up or down at a speed of +/- 7, shooting bullet
+        #     elif event.type == pygame.KEYDOWN:
+        #         if event.key == pygame.K_UP:
+        #             self.player.speed_y = -7
+        #         elif event.key == pygame.K_DOWN:
+        #             self.player.speed_y = 7
+        #         elif event.key == pygame.K_SPACE:
+        #             self.player.shoot()
+        #     # When key is released, speed is set back to 0
+        #     elif event.type == pygame.KEYUP:
+        #         if event.key == pygame.K_UP and self.player.speed_y < 0:
+        #             self.player.speed_y = 0
+        #         elif event.key == pygame.K_DOWN and self.player.speed_y > 0:
+        #             self.player.speed_y = 0
+    
+    def reset_keys(self):
+        self.UP_KEY, self.DOWN_KEY, self.SPACE_KEY, self.START_KEY, self.BACK_KEY = (
+            False, False, False, False, False)
+
+
+    def game_loop(self):
+        while self.playing:
+            self.check_events()
+            if self.BACK_KEY:
+                self.playing = False
+            self.display.fill(self.BLACK)
+
+            # Initializing game objects
+            self.all_sprites = pygame.sprite.Group()
+            self.enemies = pygame.sprite.Group()
+            self.bullets = pygame.sprite.Group()
+            self.player = Spaceship(self.all_sprites, self.bullets, self.DISPLAY_W, self.DISPLAY_H)
+            self.all_sprites.add(self.player)
+            
+            # Create 8 enemies
+            for _ in range(8):
+                enemy = Enemy(self.DISPLAY_W, self.DISPLAY_H)
+                self.all_sprites.add(enemy)
+                self.enemies.add(enemy)
+
+            # Initialize score and its font
+            self.score = 0
+            self.score_font = pygame.font.Font(None, 36)
+
+            # Load background image, set x and it's speed to move
+            self.background_img = pygame.image.load("graphics/space_bg.png")
+            self.background_img = pygame.transform.scale(self.background_img, (self.DISPLAY_W, self.DISPLAY_H))
+            self.bg_x = 0
+            self.bg_speed = 25
+
+            # Load moon image, set position to top right
+            self.moon_img = pygame.image.load("graphics/moon.png")
+            self.moon_rect = self.moon_img.get_rect()
+            self.moon_rect.topright = (self.DISPLAY_W - 50, 30)
+
+            # Font for "new highscore"
+            self.font = pygame.font.Font(None, 36)
+            self.window.blit(self.display, (0, 0))
+
+            pygame.display.update()
+            self.reset_keys
 
     def update(self):
         """Function to update the objects of the game."""
@@ -141,7 +173,7 @@ class Game:
 
        # While the game is running, continuyally call these functions
         while running:
-            if self.process_events():
+            if self.check_events():
                 running = False
             self.update()
             self.render()

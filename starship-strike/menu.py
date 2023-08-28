@@ -18,19 +18,20 @@ from highscore import HighScoreMenu
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
+class Menu():
+    def __init__(self, game):
+        self.game = game
+        self.mid_w, self.mid_h = self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2
+        self.run_display = True
+
+    def blit_screen(self):
+        self.game.window.blit(self.game_display, (0, 0))
+        pygame.display.update()
+        self.game.reset_keys()
 
 class MainMenu:
     """A class to represent the main menu screen."""
     def __init__(self):
-        # Initialize Pygame, setup window and caption
-        pygame.init()
-        self.window = pygame.display.set_mode((800, 600))
-        pygame.display.set_caption("Starship Strike")
-
-        # Setup FPS and fonts
-        self.clock = pygame.time.Clock()
-        self.font = pygame.font.Font(None, 36)
-
         # Create a list of menu items
         self.menu_items = [
             "Start Game",
@@ -46,11 +47,13 @@ class MainMenu:
     def run(self):
         """Runs the main menu screen loop, handles events."""
         # Setup running flag
-        running = True
-        while running:
+        self.run_display = True
+        while self.run_display:
+            self.game.check_events()
+            self.game.display.fill(self.game.BLACK)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    running = False
+                    self.run_display = False
                 # Moving bewtween menu items on the screen
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_UP:
@@ -60,13 +63,13 @@ class MainMenu:
                     # Handling enter/return button depending on which item is selected
                     elif event.key == pygame.K_RETURN:
                         if self.selected_item == 0:
-                            running = False
-                            running = self.start_game()
+                            self.run_display = False
+                            self.run_display = self.start_game()
                         elif self.selected_item == 1:
-                            running = False
+                            self.run_display = False
                             self.show_high_scores()
                         elif self.selected_item == 2:
-                            running = False
+                            self.run_display = False
 
             self.render()
             self.clock.tick(60)

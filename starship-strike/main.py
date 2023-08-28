@@ -12,12 +12,19 @@ Run main.py to start the program.
 
 
 from menu import MainMenu
+from game import Game
 
  
 def main():
     # Initializing object from Class and calling run function
-    menu = MainMenu()
-    menu.run()
+    g = Game()
+    
+    while g.running:
+        g.playing = True
+        g.game_loop()
+    
+    # menu = MainMenu()
+    # menu.run()
 
 if __name__ == "__main__":
     main()
