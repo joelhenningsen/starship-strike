@@ -57,12 +57,12 @@ class HighScoreMenu:
                     # If user presses 'ESC', return to main menu
                     elif event.key == pygame.K_ESCAPE:
                         running = False
-                        self.main_menu.run()
+                        # self.main_menu.run()
 
             self.render()
             self.clock.tick(60)
 
-        pygame.quit()
+        # pygame.quit()
 
     def render(self):
         """Draws the background background images, handles color of text objects."""

@@ -139,7 +139,7 @@ class Game:
         running = True
         clock = pygame.time.Clock()
 
-       # While the game is running, continuyally call these functions
+       # While the game is running, continually call these functions
         while running:
             if self.process_events():
                 running = False
@@ -148,7 +148,7 @@ class Game:
             clock.tick(60)  # Set the FPS limit to 60
 
     def game_over(self):
-        """Handles when the game ends and some high score managment."""
+        """Handles when the game ends and some high score management."""
         # Create instance of high score menu, call the read high score function
         high_score = HighScoreMenu(self)
         high_score.read_high_scores()

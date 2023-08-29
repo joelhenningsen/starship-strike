@@ -60,12 +60,12 @@ class MainMenu:
                     # Handling enter/return button depending on which item is selected
                     elif event.key == pygame.K_RETURN:
                         if self.selected_item == 0:
-                            running = False
+                            # running = False
                             running = self.start_game()
-                        elif self.selected_item == 1:
-                            running = False
+                        if self.selected_item == 1:
+                            # running = False
                             self.show_high_scores()
-                        elif self.selected_item == 2:
+                        if self.selected_item == 2:
                             running = False
 
             self.render()
