@@ -1,5 +1,5 @@
 # Starship Strike by Joel Henningsen
-I have space shooting game where the player races through space firing at enemies. The enemies slowly get closer to the user, and the user
+Control a starship and race through space firing at enemies. The enemies slowly get closer to the user, and the user
 must destroy all enemies before they reach the player or their side of the screen.
 
 ![starship-strike](https://github.com/joelhenningsen/starship-strike/assets/117242786/e7058ae8-86a2-40ee-ab99-198940a4cd6c)
